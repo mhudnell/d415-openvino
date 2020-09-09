@@ -6,3 +6,6 @@ venv/
 
 # ignore pyenv local settings
 .python-version
+
+# ignore vscode settings
+.vscode/
