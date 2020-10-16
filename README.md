@@ -21,5 +21,11 @@ This repo demos real-time face mask detection / human pose estimation with an In
 - to run openvino mask detection:
    - `python mask_detection.py --device CPU`
 - to run openvino human pose estimation demo:
-   - FP16: `python human_pose.py /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16/human-pose-estimation-0001.xml /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16/human-pose-estimation-0001.bin`
-   - FP16-int8: `python human_pose.py /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16-INT8/human-pose-estimation-0001.xml /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16-INT8/human-pose-estimation-0001.bin`
+   - FP16 (~8-12 fps):
+     ```
+     python human_pose.py /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16/human-pose-estimation-0001.xml /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16/human-pose-estimation-0001.bin
+     ```
+   - FP16-INT8 (~16-18 fps): 
+     ```
+     python human_pose.py /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16-INT8/human-pose-estimation-0001.xml /opt/intel/openvino/deployment_tools/open_model_zoo/models/intel/human-pose-estimation-0001/FP16-INT8/human-pose-estimation-0001.bin
+     ```

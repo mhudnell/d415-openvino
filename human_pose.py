@@ -32,11 +32,34 @@ if __name__ == '__main__':
     # Create alignment primitive with color as its target stream:
     align = rs.align(rs.stream.color)
 
-    # OPENVINO INITIALIZATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # OPENVINO NETWORK INITIALIZATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ie = IECore()
     net = ie.read_network(model=args['model-xml-path'], weights=args['model-bin-path'])
     exec_net = ie.load_network(network=net, device_name='CPU')
     input_layer_name = next(iter(net.inputs))
+
+    NET_INPUT_HEIGHT_SIZE = 256
+    scale = NET_INPUT_HEIGHT_SIZE / image_height
+
+    # Print input info
+    print('\nNETWORK INPUTS~~~~~~')
+    for layer, data_ptr in net.inputs.items():
+        print(
+              f'layer name:{data_ptr.name}\n'
+              f'  - precision: {data_ptr.precision}\n'
+              f'  - shape: {data_ptr.shape}\n'
+              f'  - layout: {data_ptr.layout}'
+        )
+
+    # Print output info
+    print('\nNETWORK OUTPUTS~~~~~~')
+    for layer, data_ptr in net.outputs.items():
+        print(
+              f'layer name:{data_ptr.name}\n'
+              f'  - precision: {data_ptr.precision}\n'
+              f'  - shape: {data_ptr.shape}\n'
+              f'  - layout: {data_ptr.layout}'
+        )
 
     # FPS INITIALIZATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # initialize fps counting
@@ -46,6 +69,7 @@ if __name__ == '__main__':
     fps = FPS(deque_size=fps_deque_size, update_rate=fps_update_rate)
     curr_fps = 0
 
+    # request_id = 0
     try:
         while True:
 
@@ -67,9 +91,19 @@ if __name__ == '__main__':
             color_image_reshape = np.reshape(color_image_resize, (1, 3, 256, 456))
             # print(color_image_reshape.shape)
 
-            # perform inference
+            # perform SYNC inference
             res = exec_net.infer(inputs={input_layer_name: color_image_reshape})
+            pafs = res['Mconv7_stage2_L1']
+            heatmaps = res['Mconv7_stage2_L2']
+
+            # perform ASYNC inference
+            # res = exec_net.start_async(request_id=request_id, inputs={input_layer_name: color_image_reshape})
+            # request_id += 1
+
             # print(res)
+            # print('--')
+            # for k, v in res.items():
+            #     print(k, v.shape)
 
             # compute fps
             if frame_count == fps_update_rate:
